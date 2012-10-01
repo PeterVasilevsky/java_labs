@@ -11,7 +11,15 @@ public class MatrixMul {
 	{
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("Dimension: ");
+
+		while (!scanner.hasNextInt()) {
+			System.out.println("Non int value is skipped");
+			scanner.next();
+		}
 		int dimension = scanner.nextInt();
+		dimension = Math.abs(dimension);
+		
+
 		
 		System.out.print("Enter matrix\n");
 		
@@ -20,6 +28,10 @@ public class MatrixMul {
 		
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
+				while (!scanner.hasNextInt()) {
+					System.out.println("Non int value is skipped");
+					scanner.next();
+				}
 				matrix[i][j] = scanner.nextInt();
 				tMatrix[j][i] = matrix[i][j];
 			}
