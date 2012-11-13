@@ -1,11 +1,11 @@
 package ru.spbstu.telematics.student_Vasilevsky.lab02;
 
-public class Node {
-	private Node parent;
-	private Node left;
-	private Node right;
+public class Node <T extends Comparable<T>> {
+	private Node<T> parent;
+	private Node<T> left;
+	private Node<T> right;
 	private boolean isRed;
-	private Comparable storedObject;
+	private T storedObject;
 	private boolean isNull;
 	
 	public boolean isNull() {
@@ -26,14 +26,14 @@ public class Node {
 		System.out.println("storedObject value = " + this.storedObject);
 	}
 	
-	public Node(Node parent, Comparable storedObject) {
+	public Node(Node<T> parent, T storedObject) {
 		super();
 		this.isNull = false;
 		this.parent = parent;
 		this.storedObject = storedObject;
 		this.setRed(true);
-		this.setLeft(new Node(true));
-		this.setRight(new Node(true));
+		this.setLeft(new Node<T>(true));
+		this.setRight(new Node<T>(true));
 	}
 	
 	
@@ -46,11 +46,11 @@ public class Node {
 		this.isNull = true;		
 	}
 
-	public Node getGrandParent() {
+	public Node<T> getGrandParent() {
 		return this.getParent().getParent();
 	}
 	
-	public Node getUncle() {
+	public Node<T> getUncle() {
 		if (this.getGrandParent() == null) {
 			return null;	//если нет деда, то нет и дяди
 		}
@@ -62,7 +62,7 @@ public class Node {
 		}
 	}
 	
-	public Node getOnlyLeaf() {
+	public Node<T> getOnlyLeaf() {
 		if (this.getLeft().isNull == false && this.getRight().isNull == true) {
 			return this.getLeft();
 		}
@@ -72,7 +72,7 @@ public class Node {
 		return null;
 	}
 	
-	public void replaceWith(Node newNode) {
+	public void replaceWith(Node<T> newNode) {
 		//сначала проверяем, не является ли заменяемый узел корнем дерева
 		if (this.getParent() != null) {
 			if (this == this.getParent().getLeft()) {
@@ -85,27 +85,27 @@ public class Node {
 		}
 	}
 
-	public Node getParent() {
+	public Node<T> getParent() {
 		return parent;
 	}
 
-	public void setParent(Node parent) {
+	public void setParent(Node<T> parent) {
 		this.parent = parent;
 	}
 
-	public Node getLeft() {
+	public Node<T> getLeft() {
 		return left;
 	}
 
-	public void setLeft(Node left) {
+	public void setLeft(Node<T> left) {
 		this.left = left;
 	}
 
-	public Node getRight() {
+	public Node<T> getRight() {
 		return right;
 	}
 
-	public void setRight(Node right) {
+	public void setRight(Node<T> right) {
 		this.right = right;
 	}
 
@@ -117,11 +117,11 @@ public class Node {
 		this.isRed = isRed;
 	}
 
-	public Comparable getStoredObject() {
+	public T getStoredObject() {
 		return storedObject;
 	}
 
-	public void setStoredObject(Comparable storedObject) {
+	public void setStoredObject(T storedObject) {
 		this.storedObject = storedObject;
 	}
 	

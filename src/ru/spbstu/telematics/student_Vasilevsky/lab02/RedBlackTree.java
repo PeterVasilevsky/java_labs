@@ -1,23 +1,26 @@
 package ru.spbstu.telematics.student_Vasilevsky.lab02;
 
-public class RedBlackTree implements IRedBlackTree {
-	private Node root;
+public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
+	private Node<T> root;
 	
-	public void printInfo()
-	{
-		
+	
+	public Node<T> getRoot() {
+		return root;
+	}
+	
+	public void setRoot(Node<T> root) {
+		this.root = root;
 	}
 	
 	@Override
-	public void add(Comparable e) {
-//		this.insert(e, this.getRoot());
-		this.insert(e, root);
+	public void add(T e) {
+		this.insert(e, this.getRoot());
 	}
 	
 	@Override
-	public boolean remove(Comparable o) {
+	public boolean remove(T o) {
 		boolean returnValue = false;
-		Node nodeToRemove = this.find(o, this.getRoot());
+		Node<T> nodeToRemove = this.find(o, this.getRoot());
 		while (nodeToRemove != null) {
 			System.out.println("in loop");
 			this.deleteNode(nodeToRemove);
@@ -29,15 +32,15 @@ public class RedBlackTree implements IRedBlackTree {
 	}
 
 	@Override
-	public boolean contains(Comparable o) {
+	public boolean contains(T o) {
 		if (this.find(o, this.getRoot()) != null)
 			return true;
 		return false;
 	}
 
-	private void insert(Comparable e, Node parent) {
+	private void insert(T e, Node<T> parent) {
 		if (parent == null && this.getRoot() == null) {
-			parent = new Node(null, e);
+			parent = new Node<T>(null, e);
 			this.setRoot(parent);
 			parent.setRed(false);
 			System.out.println("Root node added");
@@ -45,7 +48,7 @@ public class RedBlackTree implements IRedBlackTree {
 		//если e больше, чем предок
 		else if (e.compareTo(parent.getStoredObject()) >= 0) {
 			if (parent.getRight().isNull() == true) {
-				parent.setRight(new Node(parent, e));
+				parent.setRight(new Node<T>(parent, e));
 				System.out.println("right");
 				//проверка баланса
 				this.checkBalance1(parent.getRight());
@@ -59,7 +62,7 @@ public class RedBlackTree implements IRedBlackTree {
 		else {
 			if (parent.getLeft().isNull() == true) {
 				System.out.println("left");
-				parent.setLeft(new Node(parent, e));
+				parent.setLeft(new Node<T>(parent, e));
 				//проверка баланса
 				this.checkBalance1(parent.getLeft());
 			}
@@ -70,7 +73,7 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 
-	private void checkBalance0(Node aNode) {
+	private void checkBalance0(Node<T> aNode) {
 		if (aNode.getParent() == null) {
 			aNode.setRed(false);
 		}
@@ -80,7 +83,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 	
-	private void checkBalance1(Node aNode) {	
+	private void checkBalance1(Node<T> aNode) {	
 		if (aNode.getParent().isRed() == false) {
 			return;
 		}
@@ -89,7 +92,7 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 
-	private void checkBalance2(Node aNode) {
+	private void checkBalance2(Node<T> aNode) {
 		if ((aNode.getUncle().isNull() == false) && (aNode.getUncle().isRed() == true) && (aNode.getParent().isRed() == true)) {
 			aNode.getParent().setRed(false);
 			aNode.getUncle().setRed(false);
@@ -101,7 +104,7 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 
-	private void checkBalance3(Node aNode) {
+	private void checkBalance3(Node<T> aNode) {
 		if ((aNode == aNode.getParent().getRight()) && (aNode.getParent() == aNode.getGrandParent().getLeft())) {
 			this.rotateLeft(aNode.getParent());
 			aNode = aNode.getLeft();
@@ -110,12 +113,10 @@ public class RedBlackTree implements IRedBlackTree {
 			this.rotateRight(aNode.getParent());
 			aNode = aNode.getRight();
 		}
-//		if (aNode != null) {
-			this.checkBalance4(aNode);
-//		}
+		this.checkBalance4(aNode);
 	}
 
-	private void checkBalance4(Node aNode) {
+	private void checkBalance4(Node<T> aNode) {
 		aNode.getParent().setRed(false);
 		aNode.getGrandParent().setRed(true);
 		if ((aNode == aNode.getParent().getLeft()) && (aNode.getParent() == aNode.getGrandParent().getLeft())) {
@@ -126,66 +127,9 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 		
 	}
-
-//	private void rotateLeft(Node aNode) {		
-//		Node grandParent = aNode.getParent();	//все верно, его отец
-//		boolean isLeftChild = false;
-//		if (grandParent != null) {
-//			if (aNode == grandParent.getLeft()) {
-//				isLeftChild = true;
-//			}
-//			else {
-//				isLeftChild = false;
-//			}
-//		}
-//		
-//		aNode.setParent(aNode.getRight());
-//		aNode.setRight(aNode.getParent().getLeft());
-//		aNode.getParent().setLeft(aNode);
-//		aNode.getParent().setParent(grandParent);
-//		if (grandParent != null) {
-//			if (isLeftChild == true) {
-//				aNode.getGrandParent().setLeft(aNode.getParent());
-//			}
-//			else
-//				aNode.getGrandParent().setRight(aNode.getParent());
-//		}
-//		if (aNode.getGrandParent() == null) {
-//			this.setRoot(aNode.getParent());
-//			this.checkBalance0(this.getRoot());
-//		}
-//	}
-//
-//	private void rotateRight(Node aNode) {
-//		Node grandParent = aNode.getParent();	//все верно, его отец
-//		boolean isLeftChild = false;
-//		if (grandParent != null) {
-//			if (aNode == grandParent.getLeft()) {
-//				isLeftChild = true;
-//			}
-//			else {
-//				isLeftChild = false;
-//			}
-//		}
-//		aNode.setParent(aNode.getLeft());
-//		aNode.setLeft(aNode.getParent().getRight());
-//		aNode.getParent().setRight(aNode);
-//		aNode.getParent().setParent(grandParent);
-//		if (grandParent != null) {
-//			if (isLeftChild == true) {
-//				aNode.getGrandParent().setLeft(aNode.getParent());
-//			}
-//			else
-//				aNode.getGrandParent().setRight(aNode.getParent());
-//		}
-//		if (aNode.getGrandParent() == null) {
-//			this.setRoot(aNode.getParent());
-//			this.checkBalance0(this.getRoot());
-//		}
-//	}
 	
-	private void rotateLeft(Node aNode) {	
-		Node y = aNode.getRight();
+	private void rotateLeft(Node<T> aNode) {	
+		Node<T> y = aNode.getRight();
 		aNode.setRight(y.getLeft());
 		
 		if (y.getLeft().isNull() == false) {
@@ -206,8 +150,8 @@ public class RedBlackTree implements IRedBlackTree {
 		aNode.setParent(y);
 	}
 	
-	private void rotateRight(Node aNode) {	
-		Node y = aNode.getLeft();
+	private void rotateRight(Node<T> aNode) {	
+		Node<T> y = aNode.getLeft();
 		aNode.setLeft(y.getRight());
 		
 		if (y.getRight().isNull() == false) {
@@ -229,16 +173,9 @@ public class RedBlackTree implements IRedBlackTree {
 	}
 	
 
-	public Node getRoot() {
-		return root;
-	}
-
-	public void setRoot(Node root) {
-		this.root = root;
-	}
 
 
-	private Node find(Comparable desiredObject, Node parent) {
+	private Node<T> find(T desiredObject, Node<T> parent) {
 		if (this.getRoot() == null) {
 			System.out.println("Tree is empty");
 			return null;
@@ -264,7 +201,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 	
-	private Node sibling(Node aNode) {
+	private Node<T> sibling(Node<T> aNode) {
 //		struct node *
 //		sibling(struct node *n)
 //		{
@@ -281,7 +218,7 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 	
-	public void deleteNode(Node aNode) {
+	public void deleteNode(Node<T> aNode) {
 		if (aNode.getLeft().isNull() == false && aNode.getRight().isNull() == false) {		//если у удаляемого узла два потомка
 			this.deleteTwoChilds(aNode);
 		} else { 								//если у удаляемого узла не более одного потомка
@@ -289,13 +226,13 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 	
-	private void deleteTwoChilds (Node aNode) {
-		Node successor = this.successor(aNode);
+	private void deleteTwoChilds (Node<T> aNode) {
+		Node<T> successor = this.successor(aNode);
 		aNode.setStoredObject(successor.getStoredObject());
 		this.deleteNode(successor);		
 	}
 
-	private Node successor(Node aNode) {
+	private Node<T> successor(Node<T> aNode) {
 		if (aNode.getLeft().isNull() == false) {
 			aNode = aNode.getLeft();
 			while (aNode.getRight().isNull() == false) {
@@ -306,7 +243,7 @@ public class RedBlackTree implements IRedBlackTree {
 		return null;
 	}
 	
-	private void deleteOneChild (Node aNode) {
+	private void deleteOneChild (Node<T> aNode) {
 //		void
 //		delete_one_child(struct node *n)
 //		{
@@ -326,7 +263,7 @@ public class RedBlackTree implements IRedBlackTree {
 //		}
 		
 //		Node child = aNode.getOnlyLeaf();
-		Node child;
+		Node<T> child;
 		if (aNode.getRight().isNull())
 			child = aNode.getLeft();
 		else
@@ -344,7 +281,7 @@ public class RedBlackTree implements IRedBlackTree {
 		}
 	}
 
-	private void replaceNode(Node aNode, Node child) {
+	private void replaceNode(Node<T> aNode, Node<T> child) {
 		if (aNode.getParent() != null) {
 			if (aNode == aNode.getParent().getLeft())
 				aNode.getParent().setLeft(child);
@@ -356,7 +293,7 @@ public class RedBlackTree implements IRedBlackTree {
 			this.setRoot(child);	
 	}
 
-	private void deleteCase1(Node aNode) {
+	private void deleteCase1(Node<T> aNode) {
 //		void
 //		delete_case1(struct node *n)
 //		{
@@ -370,7 +307,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 
-	private void deleteCase2(Node aNode) {
+	private void deleteCase2(Node<T> aNode) {
 //		void delete_case2(struct node *n)
 //		{
 //		        struct node *s = sibling(n);
@@ -386,7 +323,7 @@ public class RedBlackTree implements IRedBlackTree {
 //		        delete_case3(n);
 //		}
 		
-		Node s = this.sibling(aNode);
+		Node<T> s = this.sibling(aNode);
 		if (s.isRed() == true) {
 			aNode.getParent().setRed(true);
 			s.setRed(false);
@@ -399,7 +336,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 
-	private void deleteCase3(Node aNode) {
+	private void deleteCase3(Node<T> aNode) {
 //		void delete_case4(struct node *n)
 //		{
 //		        struct node *s = sibling(n);
@@ -414,7 +351,7 @@ public class RedBlackTree implements IRedBlackTree {
 //		                delete_case5(n);
 //		}
 		
-		Node s = this.sibling(aNode);
+		Node<T> s = this.sibling(aNode);
 		
 		if ((aNode.getParent().isRed() == true) &&
 			(s.isRed() == false) &&
@@ -428,7 +365,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 
-	private void deleteCase5(Node aNode) {
+	private void deleteCase5(Node<T> aNode) {
 //		void delete_case5(struct node *n)
 //		{
 //		        struct node *s = sibling(n);
@@ -455,7 +392,7 @@ public class RedBlackTree implements IRedBlackTree {
 //		        delete_case6(n);
 //		}
 		
-		Node s = this.sibling(aNode);
+		Node<T> s = this.sibling(aNode);
 		
 		if (s.isRed() == false) {
 			if (aNode == aNode.getParent().getLeft() &&
@@ -477,7 +414,7 @@ public class RedBlackTree implements IRedBlackTree {
 		
 	}
 
-	private void deleteCase6(Node aNode) {
+	private void deleteCase6(Node<T> aNode) {
 //		void delete_case6(struct node *n)
 //		{
 //		        struct node *s = sibling(n);
@@ -494,7 +431,7 @@ public class RedBlackTree implements IRedBlackTree {
 //		        }
 //		}
 		
-		Node s = this.sibling(aNode);
+		Node<T> s = this.sibling(aNode);
 		
 		s.setRed(aNode.getParent().isRed());
 		aNode.getParent().setRed(false);
@@ -508,5 +445,4 @@ public class RedBlackTree implements IRedBlackTree {
 			this.rotateRight(aNode.getParent());
 		}
 	}
-
 }

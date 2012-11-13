@@ -6,7 +6,7 @@ public class main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		RedBlackTree tree = new RedBlackTree();
+		RedBlackTree<Integer> tree = new RedBlackTree<Integer>();
 		tree.add(new Integer(1));
 		tree.add(new Integer(5));
 		tree.add(new Integer(2));
