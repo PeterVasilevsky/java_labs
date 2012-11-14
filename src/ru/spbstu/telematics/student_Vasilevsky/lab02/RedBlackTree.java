@@ -1,8 +1,10 @@
 package ru.spbstu.telematics.student_Vasilevsky.lab02;
 
-public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
-	private Node<T> root;
-	
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T>, Iterable<T> {
+	private Node<T> root;	
 	
 	public Node<T> getRoot() {
 		return root;
@@ -10,6 +12,68 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 	
 	public void setRoot(Node<T> root) {
 		this.root = root;
+	}
+	
+	private Node<T> minNode(Node<T> aNode) {
+		if (aNode.getLeft().isNull() == false) {
+			return minNode(aNode.getLeft());
+		}
+		return aNode;
+	}
+	
+	private Node<T> getNextNode(Node<T> aNode) {
+		if (aNode.getRight().isNull() == false) {
+			return minNode(aNode.getRight());
+		}
+		Node<T> y = aNode.getParent();
+		while (y != null && aNode == y.getRight()) {
+			aNode = y;
+			y = y.getParent();
+		}
+		return y;
+	}
+	
+	class RBIterator implements Iterator<T> {	
+		private Node<T> firstNode;
+		private Node<T> currentNode;
+		
+		public RBIterator() {
+			super();
+			firstNode = RedBlackTree.this.minNode(getRoot());
+			currentNode = firstNode;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			if (getNextNode(currentNode) != null) {
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public T next() {
+			if (currentNode == firstNode) {
+				firstNode = null;
+				return currentNode.getStoredObject();
+			} 
+			if (this.hasNext()) {
+				currentNode = getNextNode(currentNode);
+				return currentNode.getStoredObject();
+			}
+			throw new NoSuchElementException();
+		}
+
+		@Override
+		public void remove() {
+			System.out.println("Oops");
+			throw new IllegalStateException();
+		}
+	}
+	
+	@Override
+	public Iterator<T> iterator() {
+		return new RBIterator();
 	}
 	
 	@Override
@@ -22,7 +86,6 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 		boolean returnValue = false;
 		Node<T> nodeToRemove = this.find(o, this.getRoot());
 		while (nodeToRemove != null) {
-			System.out.println("in loop");
 			this.deleteNode(nodeToRemove);
 			returnValue = true;
 			nodeToRemove = this.find(o, this.getRoot());
@@ -43,31 +106,24 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 			parent = new Node<T>(null, e);
 			this.setRoot(parent);
 			parent.setRed(false);
-			System.out.println("Root node added");
 		}
 		//если e больше, чем предок
 		else if (e.compareTo(parent.getStoredObject()) >= 0) {
 			if (parent.getRight().isNull() == true) {
 				parent.setRight(new Node<T>(parent, e));
-				System.out.println("right");
 				//проверка баланса
 				this.checkBalance1(parent.getRight());
-			}
-			else {
-				//рекурсия блджад!!!11
+			} else {
 				this.insert(e, parent.getRight());
 			}
 		}
 		//если е меньше чем предок
 		else {
 			if (parent.getLeft().isNull() == true) {
-				System.out.println("left");
 				parent.setLeft(new Node<T>(parent, e));
 				//проверка баланса
 				this.checkBalance1(parent.getLeft());
-			}
-			else {
-				//рекурсия блджад!!!11
+			} else {
 				this.insert(e, parent.getLeft());
 			}
 		}
@@ -121,8 +177,7 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 		aNode.getGrandParent().setRed(true);
 		if ((aNode == aNode.getParent().getLeft()) && (aNode.getParent() == aNode.getGrandParent().getLeft())) {
 			this.rotateRight(aNode.getGrandParent());
-		}
-		else {
+		} else {
 			this.rotateLeft(aNode.getGrandParent());
 		}
 		
@@ -171,22 +226,16 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 		y.setRight(aNode);
 		aNode.setParent(y);
 	}
-	
-
-
 
 	private Node<T> find(T desiredObject, Node<T> parent) {
 		if (this.getRoot() == null) {
-			System.out.println("Tree is empty");
 			return null;
 		}
 		
 		if (parent.isNull() == true) {
-			System.out.println("No such object");
 			return null;
 		}
 		if (desiredObject.compareTo(parent.getStoredObject()) == 0) {
-			System.out.println("Node has been found");
 			return parent;
 		}
 		else if (desiredObject.compareTo(parent.getStoredObject()) > 0) {
@@ -202,14 +251,6 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 	}
 	
 	private Node<T> sibling(Node<T> aNode) {
-//		struct node *
-//		sibling(struct node *n)
-//		{
-//		        if (n == n->parent->left)
-//		                return n->parent->right;
-//		        else
-//		                return n->parent->left;
-//		}
 		if (aNode == aNode.getParent().getLeft()) {
 			return aNode.getParent().getRight();
 		}
@@ -243,33 +284,13 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 		return null;
 	}
 	
-	private void deleteOneChild (Node<T> aNode) {
-//		void
-//		delete_one_child(struct node *n)
-//		{
-//		        /*
-//		         * Условие: n имеет не более одного ненулевого потомка.
-//		         */
-//		        struct node *child = is_leaf(n->right) ? n->left : n->right;
-//		 
-//		        replace_node(n, child);
-//		        if (n->color == BLACK) {
-//		                if (child->color == RED)
-//		                        child->color = BLACK;
-//		                else
-//		                        delete_case1(child);
-//		        }
-//		        free(n);
-//		}
-		
-//		Node child = aNode.getOnlyLeaf();
+	private void deleteOneChild (Node<T> aNode) {		
 		Node<T> child;
 		if (aNode.getRight().isNull())
 			child = aNode.getLeft();
 		else
 			child = aNode.getRight();
 		
-//		aNode.replaceWith(child);
 		this.replaceNode(aNode, child);
 		if (aNode.isRed() == false) {
 			if (child.isRed() == true) {
@@ -293,36 +314,12 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 			this.setRoot(child);	
 	}
 
-	private void deleteCase1(Node<T> aNode) {
-//		void
-//		delete_case1(struct node *n)
-//		{
-//		        if (n->parent != NULL)
-//		                delete_case2(n);
-//		}
-		
-		if (aNode.getParent().isNull() == false) {
+	private void deleteCase1(Node<T> aNode) {		
+		if (aNode.getParent().isNull() == false)
 			deleteCase2(aNode);
-		}
-		
 	}
 
-	private void deleteCase2(Node<T> aNode) {
-//		void delete_case2(struct node *n)
-//		{
-//		        struct node *s = sibling(n);
-//		 
-//		        if (s->color == RED) {
-//		                n->parent->color = RED;
-//		                s->color = BLACK;
-//		                if (n == n->parent->left)
-//		                        rotate_left(n->parent);
-//		                else
-//		                        rotate_right(n->parent);
-//		        } 
-//		        delete_case3(n);
-//		}
-		
+	private void deleteCase2(Node<T> aNode) {		
 		Node<T> s = this.sibling(aNode);
 		if (s.isRed() == true) {
 			aNode.getParent().setRed(true);
@@ -337,20 +334,6 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 	}
 
 	private void deleteCase3(Node<T> aNode) {
-//		void delete_case4(struct node *n)
-//		{
-//		        struct node *s = sibling(n);
-//		 
-//		        if ((n->parent->color == RED) &&
-//		            (s->color == BLACK) &&
-//		            (s->left->color == BLACK) &&
-//		            (s->right->color == BLACK)) {
-//		                s->color = RED;
-//		                n->parent->color = BLACK;
-//		        } else
-//		                delete_case5(n);
-//		}
-		
 		Node<T> s = this.sibling(aNode);
 		
 		if ((aNode.getParent().isRed() == true) &&
@@ -366,32 +349,6 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 	}
 
 	private void deleteCase5(Node<T> aNode) {
-//		void delete_case5(struct node *n)
-//		{
-//		        struct node *s = sibling(n);
-//		 
-//		        if  (s->color == BLACK) { /* this if statement is trivial, 
-//		due to case 2 (even though case 2 changed the sibling to a sibling's child, 
-//		the sibling's child can't be red, since no red parent can have a red child). */
-//		/* the following statements just force the red to be on the left of the left of the parent, 
-//		   or right of the right, so case six will rotate correctly. */
-//		                if ((n == n->parent->left) &&
-//		                    (s->right->color == BLACK) &&
-//		                    (s->left->color == RED)) { /* this last test is trivial too due to cases 2-4. */
-//		                        s->color = RED;
-//		                        s->left->color = BLACK;
-//		                        rotate_right(s);
-//		                } else if ((n == n->parent->right) &&
-//		                           (s->left->color == BLACK) &&
-//		                           (s->right->color == RED)) {/* this last test is trivial too due to cases 2-4. */
-//		                        s->color = RED;
-//		                        s->right->color = BLACK;
-//		                        rotate_left(s);
-//		                }
-//		        }
-//		        delete_case6(n);
-//		}
-		
 		Node<T> s = this.sibling(aNode);
 		
 		if (s.isRed() == false) {
@@ -414,23 +371,7 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T> {
 		
 	}
 
-	private void deleteCase6(Node<T> aNode) {
-//		void delete_case6(struct node *n)
-//		{
-//		        struct node *s = sibling(n);
-//		 
-//		        s->color = n->parent->color;
-//		        n->parent->color = BLACK;
-//		 
-//		        if (n == n->parent->left) {
-//		                s->right->color = BLACK;
-//		                rotate_left(n->parent);
-//		        } else {
-//		                s->left->color = BLACK;
-//		                rotate_right(n->parent);
-//		        }
-//		}
-		
+	private void deleteCase6(Node<T> aNode) {		
 		Node<T> s = this.sibling(aNode);
 		
 		s.setRed(aNode.getParent().isRed());

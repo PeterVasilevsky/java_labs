@@ -15,6 +15,15 @@ public class Node <T extends Comparable<T>> {
 	public void setNull(boolean isNull) {
 		this.isNull = isNull;
 	}
+	
+	public boolean isLeftChild() {
+		if (this.getParent() != null) {
+			if (this == this.getParent().getLeft()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void printInfo() {
 		if (this.isRed == true) {
