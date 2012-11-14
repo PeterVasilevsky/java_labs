@@ -1,7 +1,6 @@
 package ru.spbstu.telematics.student_Vasilevsky.lab02;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T>, Iterable<T> {
 	private Node<T> root;	
@@ -61,7 +60,7 @@ public class RedBlackTree<T extends Comparable<T>> implements IRedBlackTree<T>, 
 				currentNode = getNextNode(currentNode);
 				return currentNode.getStoredObject();
 			}
-			throw new NoSuchElementException();
+			throw new NoSuchMethodError();
 		}
 
 		@Override

@@ -21,12 +21,11 @@ public class main {
 		}
 		
 		System.out.println("Removing objects containing '4'");
+		
 		tree.remove(new Integer(4));
 		for (Integer storedObject : tree) {
 			System.out.println(storedObject);
 		}
-		
-//		tree.remove(new Integer(3));
 		
 		System.out.println("done");
 	}
