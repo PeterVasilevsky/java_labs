@@ -10,7 +10,7 @@ enum seatState {
 }
 
 public class Seat {
-	public seatState state;
+	private seatState state;
 	private Lock seatLock;
 	public final int MAX_SLEEP_TIME = 3000;
 	private int number;
