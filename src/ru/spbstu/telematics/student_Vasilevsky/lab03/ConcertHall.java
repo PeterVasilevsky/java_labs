@@ -38,7 +38,7 @@ public class ConcertHall {
 			public void run() {
 				System.out.println("It's show time!___________________________");
 				for (Seat seat : seatsVector) {
-					System.out.println("seat " + seat.getNumber() + "is " + seat.getState());
+					System.out.println("seat " + seat.getNumber() + " is " + seat.getState());
 					seat.setState(seatState.FREE);
 				}
 				System.out.println("_________________________________________");

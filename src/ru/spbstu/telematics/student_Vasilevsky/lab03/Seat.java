@@ -38,15 +38,15 @@ public class Seat {
 		}
 	}
 	
-	public int getNumber() {
+	public synchronized int getNumber() {
 		return number;
 	}
 	
-	public seatState getState() {
+	public synchronized seatState getState() {
 		return state;
 	}
 
-	public void setState(seatState state) {
+	public synchronized void setState(seatState state) {
 		this.state = state;
 	}
 
