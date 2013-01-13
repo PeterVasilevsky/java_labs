@@ -18,7 +18,6 @@ public class ClientThread implements Runnable {
     private PrintWriter out = null;
     private boolean exit = true;
     private String inMessage = null;
-    private Vector<ConnectedClient> clientsList = null;
     
 
     public ClientThread(Socket s) {
@@ -42,7 +41,6 @@ public class ClientThread implements Runnable {
             System.out.println(this.client.nickname + " is conected");
             out.println("Welcome to chat, " + this.client.nickname + "!");
             out.flush();
-            clientsList = ClientsList.getList();
             
             //оповещение о присоединенном юзере
             ClientsList.sendToEveryone(nickname + " connected", this.client);
