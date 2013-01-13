@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class ClientThread implements Runnable {
 
@@ -13,13 +14,11 @@ public class ClientThread implements Runnable {
 	private String nickname;
 	private ConnectedClient client;
 	
-	private static ArrayList<String> nicknamesList = new ArrayList<String>();
-	
 	private Scanner in = null;
     private PrintWriter out = null;
     private boolean exit = true;
     private String inMessage = null;
-    private ArrayList<ConnectedClient> clientsList = null;
+    private Vector<ConnectedClient> clientsList = null;
     
 
     public ClientThread(Socket s) {

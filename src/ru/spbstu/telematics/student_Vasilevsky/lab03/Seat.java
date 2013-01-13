@@ -38,16 +38,31 @@ public class Seat {
 		}
 	}
 	
-	public synchronized int getNumber() {
-		return number;
+	public int getNumber() {
+		seatLock.lock();
+		try {
+			return number;
+		} finally {
+			seatLock.unlock();
+		}
 	}
 	
-	public synchronized seatState getState() {
-		return state;
+	public seatState getState() {
+		seatLock.lock();
+		try {
+			return state;
+		} finally {
+			seatLock.unlock();
+		}
 	}
 
-	public synchronized void setState(seatState state) {
-		this.state = state;
+	public void setState(seatState state) {
+		seatLock.lock();
+		try {
+			this.state = state;
+		} finally {
+			seatLock.unlock();
+		}
 	}
 
 }
