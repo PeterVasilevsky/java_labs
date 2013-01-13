@@ -45,13 +45,7 @@ public class ClientThread implements Runnable {
             clientsList = ClientsList.getList();
             
             //оповещение о присоединенном юзере
-            for (ConnectedClient anotherCilent: clientsList) {
-            	if (this.client != anotherCilent) {
-            		out = new PrintWriter(anotherCilent.getSocket().getOutputStream());
-            		out.println(nickname + " connected");
-            		out.flush();
-            	}
-            }
+            ClientsList.sendToEveryone(nickname + " connected", this.client);
             
             while (exit) {
             	if (in.hasNext()) {
@@ -62,22 +56,14 @@ public class ClientThread implements Runnable {
             			continue;
             		}
                     System.out.println("message: "+inMessage);
-                    for (ConnectedClient anotherCilent: clientsList) {
-                    	out = new PrintWriter(anotherCilent.getSocket().getOutputStream());
-                    	out.println(nickname + ": " + inMessage);
-                    	out.flush();
-                    }
+                    ClientsList.sendToEveryone(nickname + ": " + inMessage, null);
 				}
             }  
             ClientsList.removeClient(this.socket);
             
             //оповещение об ушедшем юзере
             System.out.println(nickname + " disconnected");
-            for (ConnectedClient anotherCilent: clientsList) {
-            	out = new PrintWriter(anotherCilent.getSocket().getOutputStream());
-            	out.println(nickname + " is disconnected");
-            	out.flush();
-            }
+            ClientsList.sendToEveryone(nickname + " is disconnected", null);
             
         } catch (IOException ex) {
             try {
